@@ -11,13 +11,30 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional } from "class-validator";
+import { CommentCreateNestedManyWithoutUsersInput } from "./CommentCreateNestedManyWithoutUsersInput";
+import { ValidateNested, IsOptional, IsString, IsInt } from "class-validator";
+import { Type } from "class-transformer";
+import { ImageWhereUniqueInput } from "../../image/base/ImageWhereUniqueInput";
+import { RatingCreateNestedManyWithoutUsersInput } from "./RatingCreateNestedManyWithoutUsersInput";
 import { IsJSONValue } from "../../validators";
 import { GraphQLJSON } from "graphql-type-json";
 import { InputJsonValue } from "../../types";
+import { TourCreateNestedManyWithoutUsersInput } from "./TourCreateNestedManyWithoutUsersInput";
 
 @InputType()
 class UserCreateInput {
+  @ApiProperty({
+    required: false,
+    type: () => CommentCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => CommentCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => CommentCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  comments?: CommentCreateNestedManyWithoutUsersInput;
+
   @ApiProperty({
     required: false,
     type: String,
@@ -28,6 +45,18 @@ class UserCreateInput {
     nullable: true,
   })
   firstName?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => ImageWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => ImageWhereUniqueInput)
+  @IsOptional()
+  @Field(() => ImageWhereUniqueInput, {
+    nullable: true,
+  })
+  image?: ImageWhereUniqueInput | null;
 
   @ApiProperty({
     required: false,
@@ -50,10 +79,42 @@ class UserCreateInput {
 
   @ApiProperty({
     required: true,
+    type: Number,
+  })
+  @IsInt()
+  @Field(() => Number)
+  phoneNumber!: number;
+
+  @ApiProperty({
+    required: false,
+    type: () => RatingCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => RatingCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => RatingCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  ratings?: RatingCreateNestedManyWithoutUsersInput;
+
+  @ApiProperty({
+    required: true,
   })
   @IsJSONValue()
   @Field(() => GraphQLJSON)
   roles!: InputJsonValue;
+
+  @ApiProperty({
+    required: false,
+    type: () => TourCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => TourCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => TourCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  tours?: TourCreateNestedManyWithoutUsersInput;
 
   @ApiProperty({
     required: true,

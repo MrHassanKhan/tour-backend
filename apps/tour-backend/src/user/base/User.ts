@@ -11,14 +11,33 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsString, IsOptional } from "class-validator";
+import { Comment } from "../../comment/base/Comment";
+import {
+  ValidateNested,
+  IsOptional,
+  IsDate,
+  IsString,
+  IsInt,
+} from "class-validator";
 import { Type } from "class-transformer";
+import { Image } from "../../image/base/Image";
+import { Rating } from "../../rating/base/Rating";
 import { IsJSONValue } from "../../validators";
 import { GraphQLJSON } from "graphql-type-json";
 import { JsonValue } from "type-fest";
+import { Tour } from "../../tour/base/Tour";
 
 @ObjectType()
 class User {
+  @ApiProperty({
+    required: false,
+    type: () => [Comment],
+  })
+  @ValidateNested()
+  @Type(() => Comment)
+  @IsOptional()
+  comments?: Array<Comment>;
+
   @ApiProperty({
     required: true,
   })
@@ -48,6 +67,15 @@ class User {
 
   @ApiProperty({
     required: false,
+    type: () => Image,
+  })
+  @ValidateNested()
+  @Type(() => Image)
+  @IsOptional()
+  image?: Image | null;
+
+  @ApiProperty({
+    required: false,
     type: String,
   })
   @IsString()
@@ -59,10 +87,36 @@ class User {
 
   @ApiProperty({
     required: true,
+    type: Number,
+  })
+  @IsInt()
+  @Field(() => Number)
+  phoneNumber!: number;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Rating],
+  })
+  @ValidateNested()
+  @Type(() => Rating)
+  @IsOptional()
+  ratings?: Array<Rating>;
+
+  @ApiProperty({
+    required: true,
   })
   @IsJSONValue()
   @Field(() => GraphQLJSON)
   roles!: JsonValue;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Tour],
+  })
+  @ValidateNested()
+  @Type(() => Tour)
+  @IsOptional()
+  tours?: Array<Tour>;
 
   @ApiProperty({
     required: true,

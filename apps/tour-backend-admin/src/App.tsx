@@ -9,6 +9,22 @@ import { UserList } from "./user/UserList";
 import { UserCreate } from "./user/UserCreate";
 import { UserEdit } from "./user/UserEdit";
 import { UserShow } from "./user/UserShow";
+import { ImageList } from "./image/ImageList";
+import { ImageCreate } from "./image/ImageCreate";
+import { ImageEdit } from "./image/ImageEdit";
+import { ImageShow } from "./image/ImageShow";
+import { RatingList } from "./rating/RatingList";
+import { RatingCreate } from "./rating/RatingCreate";
+import { RatingEdit } from "./rating/RatingEdit";
+import { RatingShow } from "./rating/RatingShow";
+import { CommentList } from "./comment/CommentList";
+import { CommentCreate } from "./comment/CommentCreate";
+import { CommentEdit } from "./comment/CommentEdit";
+import { CommentShow } from "./comment/CommentShow";
+import { TourList } from "./tour/TourList";
+import { TourCreate } from "./tour/TourCreate";
+import { TourEdit } from "./tour/TourEdit";
+import { TourShow } from "./tour/TourShow";
 import { jwtAuthProvider } from "./auth-provider/ra-auth-jwt";
 
 const App = (): React.ReactElement => {
@@ -41,6 +57,34 @@ const App = (): React.ReactElement => {
           edit={UserEdit}
           create={UserCreate}
           show={UserShow}
+        />
+        <Resource
+          name="Image"
+          list={ImageList}
+          edit={ImageEdit}
+          create={ImageCreate}
+          show={ImageShow}
+        />
+        <Resource
+          name="Rating"
+          list={RatingList}
+          edit={RatingEdit}
+          create={RatingCreate}
+          show={RatingShow}
+        />
+        <Resource
+          name="Comment"
+          list={CommentList}
+          edit={CommentEdit}
+          create={CommentCreate}
+          show={CommentShow}
+        />
+        <Resource
+          name="Tour"
+          list={TourList}
+          edit={TourEdit}
+          create={TourCreate}
+          show={TourShow}
         />
       </Admin>
     </div>

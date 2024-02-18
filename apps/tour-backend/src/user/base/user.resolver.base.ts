@@ -26,6 +26,13 @@ import { UserFindUniqueArgs } from "./UserFindUniqueArgs";
 import { CreateUserArgs } from "./CreateUserArgs";
 import { UpdateUserArgs } from "./UpdateUserArgs";
 import { DeleteUserArgs } from "./DeleteUserArgs";
+import { CommentFindManyArgs } from "../../comment/base/CommentFindManyArgs";
+import { Comment } from "../../comment/base/Comment";
+import { RatingFindManyArgs } from "../../rating/base/RatingFindManyArgs";
+import { Rating } from "../../rating/base/Rating";
+import { TourFindManyArgs } from "../../tour/base/TourFindManyArgs";
+import { Tour } from "../../tour/base/Tour";
+import { Image } from "../../image/base/Image";
 import { UserService } from "../user.service";
 @common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
 @graphql.Resolver(() => User)
@@ -86,7 +93,15 @@ export class UserResolverBase {
   async createUser(@graphql.Args() args: CreateUserArgs): Promise<User> {
     return await this.service.createUser({
       ...args,
-      data: args.data,
+      data: {
+        ...args.data,
+
+        image: args.data.image
+          ? {
+              connect: args.data.image,
+            }
+          : undefined,
+      },
     });
   }
 
@@ -101,7 +116,15 @@ export class UserResolverBase {
     try {
       return await this.service.updateUser({
         ...args,
-        data: args.data,
+        data: {
+          ...args.data,
+
+          image: args.data.image
+            ? {
+                connect: args.data.image,
+              }
+            : undefined,
+        },
       });
     } catch (error) {
       if (isRecordNotFoundError(error)) {
@@ -130,5 +153,84 @@ export class UserResolverBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Comment], { name: "comments" })
+  @nestAccessControl.UseRoles({
+    resource: "Comment",
+    action: "read",
+    possession: "any",
+  })
+  async findComments(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: CommentFindManyArgs
+  ): Promise<Comment[]> {
+    const results = await this.service.findComments(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Rating], { name: "ratings" })
+  @nestAccessControl.UseRoles({
+    resource: "Rating",
+    action: "read",
+    possession: "any",
+  })
+  async findRatings(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: RatingFindManyArgs
+  ): Promise<Rating[]> {
+    const results = await this.service.findRatings(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Tour], { name: "tours" })
+  @nestAccessControl.UseRoles({
+    resource: "Tour",
+    action: "read",
+    possession: "any",
+  })
+  async findTours(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: TourFindManyArgs
+  ): Promise<Tour[]> {
+    const results = await this.service.findTours(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => Image, {
+    nullable: true,
+    name: "image",
+  })
+  @nestAccessControl.UseRoles({
+    resource: "Image",
+    action: "read",
+    possession: "any",
+  })
+  async getImage(@graphql.Parent() parent: User): Promise<Image | null> {
+    const result = await this.service.getImage(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
   }
 }
