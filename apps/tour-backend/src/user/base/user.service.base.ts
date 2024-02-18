@@ -10,7 +10,16 @@ https://docs.amplication.com/how-to/custom-code
 ------------------------------------------------------------------------------
   */
 import { PrismaService } from "../../prisma/prisma.service";
-import { Prisma, User } from "@prisma/client";
+
+import {
+  Prisma,
+  User, // @ts-ignore
+  Comment, // @ts-ignore
+  Rating, // @ts-ignore
+  Tour, // @ts-ignore
+  Image,
+} from "@prisma/client";
+
 import { PasswordService } from "../../auth/password.service";
 import { transformStringFieldUpdateInput } from "../../prisma.util";
 
@@ -70,5 +79,46 @@ export class UserServiceBase {
     args: Prisma.SelectSubset<T, Prisma.UserDeleteArgs>
   ): Promise<User> {
     return this.prisma.user.delete(args);
+  }
+
+  async findComments(
+    parentId: string,
+    args: Prisma.CommentFindManyArgs
+  ): Promise<Comment[]> {
+    return this.prisma.user
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .comments(args);
+  }
+
+  async findRatings(
+    parentId: string,
+    args: Prisma.RatingFindManyArgs
+  ): Promise<Rating[]> {
+    return this.prisma.user
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .ratings(args);
+  }
+
+  async findTours(
+    parentId: string,
+    args: Prisma.TourFindManyArgs
+  ): Promise<Tour[]> {
+    return this.prisma.user
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .tours(args);
+  }
+
+  async getImage(parentId: string): Promise<Image | null> {
+    return this.prisma.user
+      .findUnique({
+        where: { id: parentId },
+      })
+      .image();
   }
 }

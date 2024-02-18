@@ -11,13 +11,30 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional } from "class-validator";
+import { CommentUpdateManyWithoutUsersInput } from "./CommentUpdateManyWithoutUsersInput";
+import { ValidateNested, IsOptional, IsString, IsInt } from "class-validator";
+import { Type } from "class-transformer";
+import { ImageWhereUniqueInput } from "../../image/base/ImageWhereUniqueInput";
+import { RatingUpdateManyWithoutUsersInput } from "./RatingUpdateManyWithoutUsersInput";
 import { IsJSONValue } from "../../validators";
 import { GraphQLJSON } from "graphql-type-json";
 import { InputJsonValue } from "../../types";
+import { TourUpdateManyWithoutUsersInput } from "./TourUpdateManyWithoutUsersInput";
 
 @InputType()
 class UserUpdateInput {
+  @ApiProperty({
+    required: false,
+    type: () => CommentUpdateManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => CommentUpdateManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => CommentUpdateManyWithoutUsersInput, {
+    nullable: true,
+  })
+  comments?: CommentUpdateManyWithoutUsersInput;
+
   @ApiProperty({
     required: false,
     type: String,
@@ -28,6 +45,18 @@ class UserUpdateInput {
     nullable: true,
   })
   firstName?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => ImageWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => ImageWhereUniqueInput)
+  @IsOptional()
+  @Field(() => ImageWhereUniqueInput, {
+    nullable: true,
+  })
+  image?: ImageWhereUniqueInput | null;
 
   @ApiProperty({
     required: false,
@@ -53,6 +82,29 @@ class UserUpdateInput {
 
   @ApiProperty({
     required: false,
+    type: Number,
+  })
+  @IsInt()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  phoneNumber?: number;
+
+  @ApiProperty({
+    required: false,
+    type: () => RatingUpdateManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => RatingUpdateManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => RatingUpdateManyWithoutUsersInput, {
+    nullable: true,
+  })
+  ratings?: RatingUpdateManyWithoutUsersInput;
+
+  @ApiProperty({
+    required: false,
   })
   @IsJSONValue()
   @IsOptional()
@@ -60,6 +112,18 @@ class UserUpdateInput {
     nullable: true,
   })
   roles?: InputJsonValue;
+
+  @ApiProperty({
+    required: false,
+    type: () => TourUpdateManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => TourUpdateManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => TourUpdateManyWithoutUsersInput, {
+    nullable: true,
+  })
+  tours?: TourUpdateManyWithoutUsersInput;
 
   @ApiProperty({
     required: false,
